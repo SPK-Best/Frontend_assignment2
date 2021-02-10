@@ -11,6 +11,42 @@
         />
       </header>
 
+      <!-- This section should be hidden by default and shown when there are todos -->
+      <section class="main" v-if="todos.length">
+        <input id="toggle-all" class="toggle-all" type="checkbox" />
+        <label for="toggle-all">Mark all as complete</label>
+        <ul class="todo-list">
+          <!-- These are here just to show the structure of the list items -->
+          <!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
+          <li
+              v-for="todo in todos"
+              :key="todo.text"
+              :class="{ completed: todo.isDone, editing: todo === editing }"
+          >
+            <div class="view">
+              <input class="toggle" type="checkbox" v-model="todo.isDone" />
+              <label @dblclick="startEditing(todo)">{{ todo.text }}</label>
+              <button class="destroy" @click="destroyTodo(todo)"></button>
+            </div>
+            <input
+                class="edit"
+                @keyup.esc="cancelEditing"
+                @keyup.enter="finishEditing"
+                @blur="finishEditing"
+                :value="todo.text"
+            />
+          </li>
+        </ul>
+      </section>
+
+      <footer class="footer" v-if="todos.length">
+      <span class="todo-count">
+          <strong>{{ activeTodos.length }}</strong> item(s) left
+      </span>
+        <button class="clear-completed" @click="clearCompleted" v-show="completedTodos.length">
+          Clear completed
+        </button>
+      </footer>
     </section>
   </div>
 </template>
